@@ -1,6 +1,8 @@
 # Case study on input sensitivity of x264 for performance prediction of its configurations 
 
-The *data* folder contains data (performance measurements: execution time and size of the output video)
+The *data* folder contains some subfolders (around 35), each subfolder containing one CSV file with performance measurements (execution time and size of the output video) of 1052 configurations of x264 over a specific video (sintel, tos3k, blue, etc.) 
+
+There are also 3 R scripts. 
 
 Paper (in progress)
 https://www.overleaf.com/10673417tkmtdmhyvmrs
