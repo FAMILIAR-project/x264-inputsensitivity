@@ -269,3 +269,20 @@ colnames(impTimes2) <- rownames(impTimes)
 
 # end post-process
 
+####### USAGE 
+
+### RQ1 
+# TODO: spearman for the correlation but one can use pearson (btw does it lead to different results?)
+# TODO: kernel density is naive; I've tried with histograms also. 
+#plotCorrelationsAndDensity(etimes) 
+#plotCorrelationsAndDensity(esizes)
+
+# ce sont des fonctions pour regarder la différence de classement entre deux vidéos en particulier
+# c’est typiquement pour montrer qu’on peut avoir un bouleversement fort sur le classement entre deux vidéos
+# TODO: what are the two videos that lead to higher raking differences? 
+# TODO: what are the two videos that lead to the highest change for the 1st top configuration? 
+# (I imagine the following fictive situation: configurationX is rank number 1 for video1, but the same configurationX is rank number 899 for video 23) ) 
+# TODO: what are the two videos that lead to the highest change for the top 10 configuration? top 100 configuration? 
+# View(computeRankDifferencesByTime(6, 7))
+# View(computeRankDifferencesBySize(3, 31)) 
+
