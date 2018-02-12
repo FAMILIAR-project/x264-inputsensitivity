@@ -170,7 +170,7 @@ computeRankDifferencesByTime <- function (vidNumber1, vidNumber2) {
   
   x264_res3$elapsedtime2 <- x264_res2$elapsedtime
   x264_res3$ranktime <- v1
-  x264_res3$ranktime <- v2
+  x264_res3$ranktime2 <- v2
   
   
   x264_res3$drank <- x264_res3$ranktime2 - x264_res3$ranktime
