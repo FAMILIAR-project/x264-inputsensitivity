@@ -274,15 +274,82 @@ colnames(impTimes2) <- rownames(impTimes)
 ### RQ1 
 # TODO: spearman for the correlation but one can use pearson (btw does it lead to different results?)
 # TODO: kernel density is naive; I've tried with histograms also. 
+# eg Kullback-Leibler (KL) divergence is used to compare the similarity between the performance distributions
+# in the paper "Transfer Learning for Performance Modeling of Configurable Systems: An Exploratory Analysis"
 #plotCorrelationsAndDensity(etimes) 
 #plotCorrelationsAndDensity(esizes)
 
-# ce sont des fonctions pour regarder la différence de classement entre deux vidéos en particulier
-# c’est typiquement pour montrer qu’on peut avoir un bouleversement fort sur le classement entre deux vidéos
+# functions to look at ranking difference between 2 videos 
+# typically for showhing a strong/spectacular change in the ranking between 2 videos
 # TODO: what are the two videos that lead to higher raking differences? 
 # TODO: what are the two videos that lead to the highest change for the 1st top configuration? 
 # (I imagine the following fictive situation: configurationX is rank number 1 for video1, but the same configurationX is rank number 899 for video 23) ) 
 # TODO: what are the two videos that lead to the highest change for the top 10 configuration? top 100 configuration? 
 # View(computeRankDifferencesByTime(6, 7))
 # View(computeRankDifferencesBySize(3, 31)) 
+
+# RQ1 but this specific question: "Do inputs change the influential options?"
+# plotAllImportances(impTimes2)
+# plotAllImportances(impSizes2)
+# for computing feature importances we rely on computeImportanceByTime ou computeImportanceBySize
+#  the idea is to a machine learning algorithm (eg random forest, cf x264-util.R) and then rely on the related importance() function of packages 
+# TODO: for computing feature importances, there is certainly a better / dedicated techniques ... 
+# TODO: big question is to determine whetherthe same options impact execution time or size... or whether it depends on input videos
+
+
+### RQ2 
+# Can we identify "cheaper" inputs? (same distribution, but less costly to measure) Can we group together inputs? (same distribution, so no need to transfer)
+# it seems we can certainly exploit the correlation matrix 
+# example: cor(loadVideoMeasurements(1)$elapsedtime, loadVideoMeasurements(27)$elapsedtime)
+# [1] 0.9618621
+# we can say we can group 1 et 27 given the high correlation 
+#> mean(loadVideoMeasurements(1)$elapsedtime)
+#[1] 23.08805
+#> mean(loadVideoMeasurements(27)$elapsedtime)
+#[1] 2.402001
+#video1 takes 23 seconds on average per config to process/measure
+#video27 takes only 2.5 seconds
+# in the future one can take video27 instead of video1 because it is cheaper 
+# cheap means here: time needed to measure a sample of configurations
+# TODO: automatically identify clusters of videos (cluster is not necessarily limited to 2 videos, can be 3, 4, ...)
+# TODO: associate the cheapest video for a given cluster
+# TODO: what's unclear is the criterion to group videos (threshold of correlations? unsupervised learning?)
+# TODO: even more difficult: we can create clusters such that in each cluster the correlation is "maximised" (sounds a good greedy strategy); 
+# a more sophisticated strategy is to create clusters such that we minimize the cost of cheapest videos of each cluster (sum of execution time of cheap videos)
+
+### RQ3 
+
+## preliminary remarks
+# a correlation coefficient is good at first sight 
+# but what we really want is to transfer prediction from one video to another
+# TODO: can we imagine that even with a close to 0 correlation coefficient we find very effective "function transfers"? 
+# it is possible see the literature on multi-target learning, transfer learning, adaptive learning, etc. 
+
+# anyway: for evaluating the error rate of a learning algorithm over one video
+# plotAllRegAccuracies("time") 
+# plotAllRegAccuracies("size")
+#or for a specific video: computeRegAccuracy(loadVideoMeasurements(2), “time”)
+#mae
+# 1 2.959217
+# interesting to note that there are some videos are more challenging in terms of predicition erros 
+## end of preliminary remarks
+
+# what is really interesting for RQ3 is to transfer effectively a prediction model for one video to another 
+# computeLinearRelVideo(1, 2, 1000)
+# linear regression is used right now
+# here between video1 and video2 
+# idea is as follows:
+  # * we are able to predit performances for video 1 (over a sample s1)
+  # * we use another sample of configs (s2) but this time  with video 2. We hope s2 will be small (ie smaller than s1, a subset of s1)
+  # * are we able to transfer predictions from video 1 to video 2? stated differently: 
+  # can we save the re-learning over the whole sample of s1 on video 2 ?
+# actual implementation is naive for 3 reasons:
+#  * we rely on all raw measurements of video 1 (and not on a performance perdiction model over a sample) => zero error, which is a strong assumption of course
+#  * we learn over 1000 configurations (for video 2, cf 3rd parameter) => it is a lot of course, but we can play on this parameter
+#  * I am using a very basic/simple linear regression but we use more sophisticated techniques  (reg linear polynomial) 
+# 3 points are TODO (we need to extend/improve the current implementation)
+# challenging example 
+#  > cor(loadVideoMeasurements(27)$size, loadVideoMeasurements(4)$size)
+# [1] 0.5517978
+# sounds hard to find a transfer function
 
