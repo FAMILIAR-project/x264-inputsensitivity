@@ -2,8 +2,8 @@
 
 
 `x264-analysis-final.ipynb` is the main Python notebook. 
-There is one important parameter, specified as a global variable: `predDimension`. 
-It can equal to `size` or `elapsedtime`, since we're conduction the study for the two performance properties (encoding time and size of the output videos). 
+
+There is one important parameter, specified as a global variable: `predDimension`. Its value can equal to `size` or `elapsedtime`, since we're conducting the study for two performance properties of x264 (encoding time and size of the output videos). 
 
 Call `jupyter-notebook` and an execution of this notebook should work.  
 It should compute many things, save some figures in PDF or PNG, etc. 
